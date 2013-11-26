@@ -1,0 +1,2 @@
+Add lang data in the build folder of the project or change the location in main.cpp accordingly.
+the langdata consists of training text without which algorithm wont work.
