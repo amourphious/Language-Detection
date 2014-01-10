@@ -16,7 +16,9 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    training_text_map.cpp
+    training_text_map.cpp \
+    languagedectector.cpp
 
 HEADERS += \
-    training_text_map.h
+    training_text_map.h \
+    languagedectector.h

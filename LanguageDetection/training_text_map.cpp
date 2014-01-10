@@ -1,23 +1,21 @@
 #include "training_text_map.h"
 
+#include <QString>
 #include <QStringList>
 
-TrainingTextMap::TrainingTextMap()
-{
-    matchedNGram = 0;
-}
-
-QString punctuation = ",.?<>:;\"'!@#$%^&()-_\t\r";
 
 void TrainingTextMap::createTTMap(QString trainingText){
-    for(int i = 0; i < punctuation.size(); i++)
-        trainingText.remove(punctuation.at(i));
+    QString punctuation = ",.?<>:;\"'!@#$%^&()-_\t\r";
 
-    QStringList tokens = trainingText.split(' ');
+    for(int i = 0; i < punctuation.size(); i++)
+        trainingText.replace(punctuation.at(i)," ");
+    trainingText.replace("\n"," ");
+    trainingText.simplified();
+    QStringList tokens = trainingText.split(' ',QString::SkipEmptyParts);
 
     for(int i = 0; i < tokens.size(); i++){
         QString temp = tokens.at(i);
-        temp = temp.simplified();
+        temp[0] = temp[0].toUpper();
         if( TTMap.value(temp, -1) == -1 ){
             //qDebug() << "adding key" << temp;
             TTMap[temp] = 1;
@@ -48,9 +46,22 @@ void TrainingTextMap::createTTMap(QString trainingText){
 }
 
 
-QString TrainingTextMap::extractMaxNGram(int freq){
-    QString ans = getKey(freq);
-    if(ans != "@")
-        TTMap.remove(ans);
-    return ans;
+QPair <QString, int> InputMap::extractMaxNGram(){
+
+    if( !nGramCount.isEmpty()){
+        int maxFq = nGramCount[0];
+        QString key = TTMap.key(maxFq, "@");
+        if ( key == "@" ){
+            nGramCount.removeAt(0);
+            return extractMaxNGram();
+        }
+        TTMap.remove(key);
+        QPair <QString, int> max(key, maxFq);
+        return max;
+    }
+    else{
+        QPair <QString, int> max("@", -1);
+        return max;
+    }
+
 }

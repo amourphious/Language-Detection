@@ -5,23 +5,26 @@
 #include <QMap>
 #include <QList>
 #include <QStringList>
+#include <QDebug>
+#include <QPair>
 
 class TrainingTextMap
 {
     QString languageName;
+
+
+protected:
     QMap <QString, int> TTMap;
 
 public:
     QList<int> nGramCount;
     int matchedNGram, freq;
 
-    TrainingTextMap();
+    TrainingTextMap(){
+        matchedNGram = 0;
+    }
 
     void createTTMap(QString trainingText);
-
-    void setLanguageName(QString name){
-        languageName = name;
-    }
 
     QString getLanguageName(){
         return languageName;
@@ -39,10 +42,28 @@ public:
         return TTMap.keys();
     }
 
-    QString extractMaxNGram(int freq);
+    void setLanguageName(QString name){
+        languageName = name;
+    }
+
+};
+
+
+class InputMap : public TrainingTextMap {
+
+
+public :
+    QPair<QString, int> extractMaxNGram();
 
     void add(QString key, int value){
+        if(! nGramCount.contains(value))
+            nGramCount<<value;
+
         TTMap[key] = value;
+    }
+
+    int size(){
+        return TTMap.size();
     }
 };
 
