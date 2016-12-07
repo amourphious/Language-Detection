@@ -7,64 +7,49 @@
 #include <QStringList>
 #include <QDebug>
 #include <QPair>
+#include <QtMath>
 
-class TrainingTextMap
+class training_text_map
 {
+private:
+    QMap<QString, QPair<long, double>> trainingMap;
+    long size;
     QString languageName;
-
-
-protected:
-    QMap <QString, int> TTMap;
-
+    double calculateFrequency(int occurence, int total);
 public:
-    QList<int> nGramCount;
-    int matchedNGram, freq;
+    training_text_map();
+    training_text_map(QString trainingText);
+    training_text_map(QString trainingText, QString language);
 
-    TrainingTextMap(){
-        matchedNGram = 0;
+    long getOccurence(QString nGram) {
+        if (trainingMap.contains(nGram)) {
+            return trainingMap[nGram].first;
+        }
+        return -1;
     }
 
-    void createTTMap(QString trainingText);
+    double getFrequency(QString nGram) {
+        if (trainingMap.contains(nGram)) {
+            return trainingMap[nGram].second;
+        }
+        return 1000;
+    }
 
-    QString getLanguageName(){
+    QList<QString> getUniqueNGrams() {
+        return trainingMap.keys();
+    }
+
+    QString getLanguageName() {
         return languageName;
     }
 
-    QString getKey(int value){
-        return TTMap.key(value, "@");
+    void setlanguageName(QString language) {
+        languageName = language;
     }
 
-    int getValue(QString key){
-        return TTMap.value(key, -1);
-    }
-
-    QStringList getKeys(){
-        return TTMap.keys();
-    }
-
-    void setLanguageName(QString name){
-        languageName = name;
-    }
-
-};
-
-
-class InputMap : public TrainingTextMap {
-
-
-public :
-    QPair<QString, int> extractMaxNGram();
-
-    void add(QString key, int value){
-        if(! nGramCount.contains(value))
-            nGramCount<<value;
-
-        TTMap[key] = value;
-    }
-
-    int size(){
-        return TTMap.size();
-    }
+    long getSize() const;
+    void setSize(long value);
+    void refreshTrainingMap(QString inputString);
 };
 
 #endif // TRAINING_TEXT_MAP_H

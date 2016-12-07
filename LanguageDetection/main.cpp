@@ -1,27 +1,15 @@
 #include <QCoreApplication>
-
-#include "training_text_map.h"
-#include "languagedectector.h"
-#include <iostream>
-#include <stdio.h>
-#include <QDir>
-#include <QFile>
 #include <QDebug>
-#include <QTextStream>
-
+#include <QList>
+#include "training_text_map.h"
+#include "language_score_model.h"
+#include "language_detector.h"
 
 int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
-    LanguageDetector ld;
-    //ins.close();
-    char str[10000];
-    while(gets(str)){
-        if (str[0] == '@')
-            break;
-        QString lng = ld.detectLanguage(str);
-        qDebug()<<"detected Language: "<<lng;
-        qDebug()<<"Press @ to exit";
-    }
+    LanguageDetector ld("hello hello");
+    QString l = ld.detectLanguage("helo my name is");
+    l = ld.detectLanguage("Hola mi");
     return a.exec();
 }
